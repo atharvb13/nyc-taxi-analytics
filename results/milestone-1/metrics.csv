@@ -1,0 +1,9 @@
+run_id,case,query,phase,repeat,input_rows,clean_rows,result_rows,runtime_seconds,input_rows_per_second,status,error
+milestone-1,one_month,hourly_pickups,warmup,1,2964624,2926295,168,1.100435,2694047.86,ok,
+milestone-1,one_month,hourly_pickups,measured,1,2964624,2926295,168,0.842095,3520534.95,ok,
+milestone-1,one_month,hourly_pickups,measured,2,2964624,2926295,168,0.772876,3835834.57,ok,
+milestone-1,one_month,hourly_pickups,measured,3,2964624,2926295,168,0.712356,4161719.81,ok,
+milestone-1,two_months,hourly_pickups,warmup,1,5972150,5892352,168,1.308686,4563470.68,ok,
+milestone-1,two_months,hourly_pickups,measured,1,5972150,5892352,168,1.164366,5129100.30,ok,
+milestone-1,two_months,hourly_pickups,measured,2,5972150,5892352,168,1.138351,5246314.52,ok,
+milestone-1,two_months,hourly_pickups,measured,3,5972150,5892352,168,1.112789,5366832.76,ok,

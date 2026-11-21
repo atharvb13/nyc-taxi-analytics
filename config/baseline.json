@@ -1,0 +1,14 @@
+{
+  "master": "local[2]",
+  "shuffle_partitions": 8,
+  "query": "hourly_pickups",
+  "warmups": 1,
+  "repetitions": 3,
+  "cases": {
+    "one_month": ["data/raw/yellow_tripdata_2024-01.parquet"],
+    "two_months": [
+      "data/raw/yellow_tripdata_2024-01.parquet",
+      "data/raw/yellow_tripdata_2024-02.parquet"
+    ]
+  }
+}
