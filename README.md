@@ -1,10 +1,12 @@
 # NYC Taxi Analytics
 
-A PySpark project for COMPSCI 532 Systems for Data Science. It ingests monthly NYC Yellow Taxi records, runs Spark SQL mobility analyses, and measures how query execution changes with input size.
+COMPSCI 532 · Systems for Data Science
 
-## Set up and verify Spark
+The first experiment times the same Spark SQL query on one month of NYC Yellow Taxi trips and then on two. The query groups pickups by day of week and hour.
 
-Use Python 3.12 and JDK 21. These were the versions used for the first milestone. Run the commands from the repository root.
+## Run locally
+
+Use Python 3.12 and JDK 21. Run these commands from the repository root.
 
 ```sh
 python3.12 -m venv .venv
@@ -15,47 +17,42 @@ python -m src.analytics --smoke
 python -m unittest discover -s tests -v
 ```
 
-The smoke check verifies that four Spark partitions process 1,000 rows and return a sum of 499,500. The fixture tests cover schema errors, cross-file type changes, each cleaning stage, all three SQL workloads, unknown zone IDs, result equivalence after repartitioning and caching, and benchmark error reporting. Tests use generated fixtures and run without TLC downloads.
+The smoke check runs a sum across four Spark partitions. The tests use small fixtures, so you can run them before downloading the trip files. They check the cleaning rules, the SQL results, and what the benchmark logs when a query fails.
 
 ## Download data and run a query
 
-The [NYC Taxi & Limousine Commission](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) publishes the trip data. The January and February 2024 Yellow Taxi files and optional zone lookup below were downloaded on November 21, 2026. The downloader writes URLs, dates, byte sizes, and SHA-256 checksums to `data/raw/manifest.json`. The checksums for the benchmark inputs are in the [recorded manifest](results/milestone-1/tlc-manifest.json).
-
-- [yellow_tripdata_2024-01.parquet](https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet)
-- [yellow_tripdata_2024-02.parquet](https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-02.parquet)
-- [taxi_zone_lookup.csv](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv)
-
 ```sh
 python scripts/download_data.py
-python -m src.analytics data/raw/yellow_tripdata_2024-0[12].parquet \
+python -m src.analytics \
+  data/raw/yellow_tripdata_2024-01.parquet data/raw/yellow_tripdata_2024-02.parquet \
   --query top_zones --zones data/raw/taxi_zone_lookup.csv
 ```
 
-Spark validates the seven required columns in each file and normalizes their types before combining months. The CLI prints cumulative row counts for each cleaning stage, followed by the query result. Cleaning retains trips with a positive wall-clock duration of up to 24 hours and finite, nonnegative distance and fare. Zero distance or fare is allowed. TLC timestamps are treated as New York local clock readings. Zone IDs and passenger counts are kept where available.
+The script downloads `yellow_tripdata_2024-01.parquet`, `yellow_tripdata_2024-02.parquet`, and `taxi_zone_lookup.csv` into the Git-ignored `data/raw/` folder. The files for this run were downloaded on November 21, 2026. See the manifest for the exact URLs and checksums. [TLC data page](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) · [Download manifest](results/milestone-1/tlc-manifest.json)
+
+The CLI checks the required columns and casts them to common types before combining the months. It drops trips with missing timestamps, drop-offs at or before pickup, or durations over 24 hours. It also drops missing, negative, or non-finite distances and fares. The CLI prints how many trips remain after each step. It uses New York local time.
 
 | Query | Output |
 | --- | --- |
-| `hourly_pickups` | Pickup counts by day of week and hour. Spark numbers Sunday as 1. |
-| `top_zones` | Top 10 pickup and top 10 drop-off zones, with names when the lookup is supplied. Unmatched IDs remain in the results. |
-| `trip_stats_by_time` | Trip counts, means, and approximate medians of duration and distance in six-hour pickup windows. |
+| `hourly_pickups` | Pickups by weekday and hour. Sunday is day 1. |
+| `top_zones` | Ten pickup zones and ten drop-off zones, ranked by trip count. The lookup adds names where available. |
+| `trip_stats_by_time` | Trip counts, mean and approximate median duration, and mean and approximate median distance by six-hour pickup window. |
 
-## First milestone baselines
+## First benchmark
 
 ```sh
 python -m src.benchmark --config config/baseline.json --output output/baseline
 ```
 
-The [baseline configuration](config/baseline.json) runs the same hourly pickup aggregation on January alone and on January plus February. It uses Spark 4.0.1 with two local cores, eight SQL shuffle partitions, adaptive query execution disabled, and no explicit Spark caching. Each case has one warm-up and three measured trials. The timer wraps `collect()` on the 168-row aggregate, so it includes scanning, filtering, query execution, and transfer of the result to Python. The separate quality-count pass and plan capture are outside the timer. Throughput uses input rows before cleaning.
-
-| Input | Input rows | Clean rows | Median measured runtime | Median input rows/s |
+| Input | Input rows | Clean rows | Median runtime | Median input rows/s |
 | --- | ---: | ---: | ---: | ---: |
 | January 2024 | 2,964,624 | 2,926,295 | 0.773 s | 3.84 M |
 | January and February 2024 | 5,972,150 | 5,892,352 | 1.138 s | 5.25 M |
 
-The January case ran first on a single Apple M4 machine with 16 GiB RAM. Reading two files also changed the scan layout. JVM warm-up and OS file caching may contribute to the higher measured throughput for the larger case. These numbers describe this local run.
+Both cases used Spark 4.0.1 on an Apple M4 with 16 GiB RAM, two local cores, and eight shuffle partitions. Adaptive query execution was off, and Spark ran without caching the trip data. Each case had one warm-up and three timed trials. The timer covers the `collect()` call, from scanning and filtering the files through returning 168 counts to Python. Throughput uses the row count before cleaning. [Benchmark settings](config/baseline.json) · [Timings, counts, and query plans](results/milestone-1/)
 
-The [recorded results](results/milestone-1/) include trial-level timings, failed-trial status fields, the Spark configuration and machine details, cumulative cleaning counts, and formatted physical plans. Raw TLC files stay in the ignored `data/` directory.
+The two-month run read roughly twice as many rows and took about 47% longer. January ran first in the same Spark session, and the second case added another Parquet file. The JVM, OS file cache, and different scan layout could all affect that gap.
 
 ## AI use
 
-OpenAI Codex assisted with implementing the first milestone, writing tests and documentation, running the baseline experiments, and setting up GitHub.
+OpenAI Codex helped write the code, tests, and README for this milestone, run the benchmarks, and set up the repository.
