@@ -53,6 +53,3 @@ Both cases used Spark 4.0.1 on an Apple M4 with 16 GiB RAM, two local cores, and
 
 The two-month run read roughly twice as many rows and took about 47% longer. January ran first in the same Spark session, and the second case added another Parquet file. The JVM, OS file cache, and different scan layout could all affect that gap.
 
-## AI use
-
-OpenAI Codex helped write the code, tests, and README for this milestone, run the benchmarks, and set up the repository.
