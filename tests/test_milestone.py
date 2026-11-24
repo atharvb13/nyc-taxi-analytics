@@ -6,11 +6,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from src.benchmark import METRIC_FIELDS, run_case
+from src.benchmark import METRIC_FIELDS, begin_action, end_action, run_case
 from src.clean import clean_trips, quality_counts
 from src.ingest import normalize_trips, read_trips
 from src.queries import QUERIES, register_views
 from src.runtime import start_spark
+from src.task_metrics import write_stages
 
 MONDAY = datetime(2024, 1, 1, 8)
 SCHEMA = """
@@ -105,6 +106,28 @@ class MilestoneTests(unittest.TestCase):
         self.assertEqual(tuple(morning), (6, 4, 17.5, 10, 2.75, 2.0))
         self.assertEqual(tuple(afternoon), (12, 1, 40, 40, 5.0, 5.0))
 
+    def test_fare_per_mile_filters_short_trips_and_averages_each_ratio(self):
+        short = self.spark.createDataFrame([trip(distance=0.02, fare=20.0)], SCHEMA)
+        raw = normalize_trips(self.fixture.unionByName(short), "fixture")
+        register_views(self.spark, clean_trips(raw))
+        rows = self.spark.sql(QUERIES["fare_by_pickup_zone"]).collect()
+        self.assertEqual([tuple(row) for row in rows], [
+            (1, None, 4, 8.0, 3.07),
+            (999, None, 1, 8.0, 2.0),
+        ])
+
+    def test_routes_rank_within_each_hour_and_keep_unmatched_zones(self):
+        with TemporaryDirectory() as directory:
+            lookup = Path(directory) / "zones.csv"
+            lookup.write_text("LocationID,Zone\n1,Alpha\n2,Beta\n", encoding="utf-8")
+            register_views(self.spark, self.cleaned_fixture(), str(lookup))
+            rows = self.spark.sql(QUERIES["routes_by_hour"]).collect()
+        self.assertEqual([tuple(row) for row in rows], [
+            (8, 1, 1, "Alpha", 2, "Beta", 3),
+            (8, 2, 999, None, 2, "Beta", 1),
+            (13, 1, 1, "Alpha", 1, "Alpha", 1),
+        ])
+
     def test_benchmark_records_timed_and_failed_trials(self):
         settings = {"query": "hourly_pickups", "warmups": 1, "repetitions": 1}
         metrics = io.StringIO()
@@ -116,15 +139,46 @@ class MilestoneTests(unittest.TestCase):
             self.fixture.write.parquet(path)
             self.assertTrue(run_case(self.spark, "fixture", [path], settings, output, writer, "test"))
             self.assertIn("HashAggregate", (output / "fixture.plan.txt").read_text(encoding="utf-8"))
+            case = {"inputs": [path], "cache": "memory_and_disk", "repartition": 3}
+            self.assertTrue(run_case(self.spark, "cached", case, settings, output, writer, "test"))
+            self.assertFalse(self.spark.table("trips").is_cached)
             with patch("src.benchmark.QUERIES", {"hourly_pickups": "SELECT * FROM missing_view"}):
                 self.assertFalse(run_case(self.spark, "failed", [path], settings, output, writer, "test"))
 
         metrics.seek(0)
         reader = csv.DictReader(metrics)
         self.assertEqual(reader.fieldnames, list(METRIC_FIELDS))
-        warmup, measured, failed_warmup, failed_trial = list(reader)
+        warmup, measured, buildup, cached_warmup, cached, failed_warmup, failed_trial = list(reader)
         self.assertEqual((warmup["phase"], measured["phase"]), ("warmup", "measured"))
         self.assertEqual((measured["status"], measured["clean_rows"], measured["result_rows"]), ("ok", "5", "3"))
         self.assertGreater(float(measured["runtime_seconds"]), 0)
+        self.assertEqual((buildup["phase"], buildup["cached_partitions"]), ("cache_build", "3"))
+        self.assertGreater(int(buildup["cache_memory_bytes"]), 0)
+        self.assertEqual(cached_warmup["phase"], "warmup")
+        self.assertEqual(cached["result_sha256"], measured["result_sha256"])
         self.assertEqual((failed_warmup["status"], failed_trial["status"]), ("failed", "failed"))
         self.assertIn("missing_view", failed_trial["error"])
+
+
+class StageMetricsTests(unittest.TestCase):
+    def test_event_log_keeps_stages_for_the_timed_action(self):
+        with TemporaryDirectory() as directory:
+            logs = Path(directory).resolve() / "logs"
+            logs.mkdir()
+            spark = start_spark(shuffle_partitions=2, event_dir=logs)
+            try:
+                spark.range(20, numPartitions=2).count()
+                begin_action(spark, "fixture", "measured", 1)
+                self.assertEqual(spark.range(10, numPartitions=2).count(), 10)
+                end_action(spark)
+            finally:
+                spark.stop()
+            output = logs.parent / "stages.csv"
+            self.assertGreater(write_stages(logs, output), 0)
+            with output.open(newline="", encoding="utf-8") as file:
+                rows = list(csv.DictReader(file))
+        self.assertEqual({(row["case"], row["phase"], row["repeat"]) for row in rows}, {
+            ("fixture", "measured", "1"),
+        })
+        self.assertEqual({row["stage_name"] for row in rows}, {"count"})
+        self.assertEqual(sum(int(row["input_rows"]) for row in rows), 10)

@@ -50,6 +50,45 @@ QUERIES = {
         GROUP BY start_hour
         ORDER BY start_hour
     """,
+    "fare_by_pickup_zone": """
+        WITH fares AS (
+            SELECT pickup_zone_id AS zone_id, count(*) AS trips,
+                   avg(fare_amount) AS mean_fare,
+                   avg(fare_amount / trip_distance) AS mean_fare_per_mile
+            FROM trips
+            WHERE trip_distance >= 0.1 AND pickup_zone_id IS NOT NULL
+            GROUP BY pickup_zone_id
+        )
+        SELECT fares.zone_id, zones.zone_name, fares.trips,
+               round(fares.mean_fare, 2) AS mean_fare,
+               round(fares.mean_fare_per_mile, 2) AS mean_fare_per_mile
+        FROM fares
+        LEFT JOIN zones USING (zone_id)
+        ORDER BY fares.trips DESC, fares.zone_id
+    """,
+    "routes_by_hour": """
+        WITH route_counts AS (
+            SELECT hour(pickup_at) AS pickup_hour, pickup_zone_id, dropoff_zone_id,
+                   count(*) AS trips
+            FROM trips
+            WHERE pickup_zone_id IS NOT NULL AND dropoff_zone_id IS NOT NULL
+            GROUP BY hour(pickup_at), pickup_zone_id, dropoff_zone_id
+        ),
+        ranked AS (
+            SELECT *, row_number() OVER (
+                PARTITION BY pickup_hour ORDER BY trips DESC, pickup_zone_id, dropoff_zone_id
+            ) AS route_rank
+            FROM route_counts
+        )
+        SELECT ranked.pickup_hour, ranked.route_rank, ranked.pickup_zone_id,
+               pickup.zone_name AS pickup_zone, ranked.dropoff_zone_id,
+               dropoff.zone_name AS dropoff_zone, ranked.trips
+        FROM ranked
+        LEFT JOIN zones AS pickup ON ranked.pickup_zone_id = pickup.zone_id
+        LEFT JOIN zones AS dropoff ON ranked.dropoff_zone_id = dropoff.zone_id
+        WHERE ranked.route_rank <= 5
+        ORDER BY ranked.pickup_hour, ranked.route_rank
+    """,
 }
 
 

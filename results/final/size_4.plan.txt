@@ -1,0 +1,124 @@
+== Physical Plan ==
+* Sort (22)
++- Exchange (21)
+   +- * HashAggregate (20)
+      +- Exchange (19)
+         +- * HashAggregate (18)
+            +- Union (17)
+               :- * Project (4)
+               :  +- * Filter (3)
+               :     +- * ColumnarToRow (2)
+               :        +- Scan parquet  (1)
+               :- * Project (8)
+               :  +- * Filter (7)
+               :     +- * ColumnarToRow (6)
+               :        +- Scan parquet  (5)
+               :- * Project (12)
+               :  +- * Filter (11)
+               :     +- * ColumnarToRow (10)
+               :        +- Scan parquet  (9)
+               +- * Project (16)
+                  +- * Filter (15)
+                     +- * ColumnarToRow (14)
+                        +- Scan parquet  (13)
+
+
+(1) Scan parquet
+Output [4]: [tpep_pickup_datetime#385, tpep_dropoff_datetime#386, trip_distance#388, fare_amount#394]
+Batched: true
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(tpep_pickup_datetime), IsNotNull(tpep_dropoff_datetime), IsNotNull(trip_distance), GreaterThanOrEqual(trip_distance,0.0), LessThan(trip_distance,Infinity), IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), LessThan(fare_amount,Infinity)]
+ReadSchema: struct<tpep_pickup_datetime:timestamp_ntz,tpep_dropoff_datetime:timestamp_ntz,trip_distance:double,fare_amount:double>
+
+(2) ColumnarToRow [codegen id : 1]
+Input [4]: [tpep_pickup_datetime#385, tpep_dropoff_datetime#386, trip_distance#388, fare_amount#394]
+
+(3) Filter [codegen id : 1]
+Input [4]: [tpep_pickup_datetime#385, tpep_dropoff_datetime#386, trip_distance#388, fare_amount#394]
+Condition : (((((((((((isnotnull(tpep_pickup_datetime#385) AND isnotnull(tpep_dropoff_datetime#386)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#385 as timestamp), cast(tpep_dropoff_datetime#386 as timestamp), Some(America/New_York)) > 0)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#385 as timestamp), cast(tpep_dropoff_datetime#386 as timestamp), Some(America/New_York)) <= 86400000000)) AND isnotnull(trip_distance#388)) AND NOT isnan(trip_distance#388)) AND (trip_distance#388 >= 0.0)) AND (trip_distance#388 < Infinity)) AND isnotnull(fare_amount#394)) AND NOT isnan(fare_amount#394)) AND (fare_amount#394 >= 0.0)) AND (fare_amount#394 < Infinity))
+
+(4) Project [codegen id : 1]
+Output [2]: [dayofweek(cast(tpep_pickup_datetime#385 as date)) AS _groupingexpression#578, hour(tpep_pickup_datetime#385, Some(America/New_York)) AS _groupingexpression#579]
+Input [4]: [tpep_pickup_datetime#385, tpep_dropoff_datetime#386, trip_distance#388, fare_amount#394]
+
+(5) Scan parquet
+Output [4]: [tpep_pickup_datetime#412, tpep_dropoff_datetime#413, trip_distance#415, fare_amount#421]
+Batched: true
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(tpep_pickup_datetime), IsNotNull(tpep_dropoff_datetime), IsNotNull(trip_distance), GreaterThanOrEqual(trip_distance,0.0), LessThan(trip_distance,Infinity), IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), LessThan(fare_amount,Infinity)]
+ReadSchema: struct<tpep_pickup_datetime:timestamp_ntz,tpep_dropoff_datetime:timestamp_ntz,trip_distance:double,fare_amount:double>
+
+(6) ColumnarToRow [codegen id : 2]
+Input [4]: [tpep_pickup_datetime#412, tpep_dropoff_datetime#413, trip_distance#415, fare_amount#421]
+
+(7) Filter [codegen id : 2]
+Input [4]: [tpep_pickup_datetime#412, tpep_dropoff_datetime#413, trip_distance#415, fare_amount#421]
+Condition : (((((((((((isnotnull(tpep_pickup_datetime#412) AND isnotnull(tpep_dropoff_datetime#413)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#412 as timestamp), cast(tpep_dropoff_datetime#413 as timestamp), Some(America/New_York)) > 0)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#412 as timestamp), cast(tpep_dropoff_datetime#413 as timestamp), Some(America/New_York)) <= 86400000000)) AND isnotnull(trip_distance#415)) AND NOT isnan(trip_distance#415)) AND (trip_distance#415 >= 0.0)) AND (trip_distance#415 < Infinity)) AND isnotnull(fare_amount#421)) AND NOT isnan(fare_amount#421)) AND (fare_amount#421 >= 0.0)) AND (fare_amount#421 < Infinity))
+
+(8) Project [codegen id : 2]
+Output [2]: [dayofweek(cast(tpep_pickup_datetime#412 as date)) AS _groupingexpression#580, hour(tpep_pickup_datetime#412, Some(America/New_York)) AS _groupingexpression#581]
+Input [4]: [tpep_pickup_datetime#412, tpep_dropoff_datetime#413, trip_distance#415, fare_amount#421]
+
+(9) Scan parquet
+Output [4]: [tpep_pickup_datetime#439, tpep_dropoff_datetime#440, trip_distance#442, fare_amount#448]
+Batched: true
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(tpep_pickup_datetime), IsNotNull(tpep_dropoff_datetime), IsNotNull(trip_distance), GreaterThanOrEqual(trip_distance,0.0), LessThan(trip_distance,Infinity), IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), LessThan(fare_amount,Infinity)]
+ReadSchema: struct<tpep_pickup_datetime:timestamp_ntz,tpep_dropoff_datetime:timestamp_ntz,trip_distance:double,fare_amount:double>
+
+(10) ColumnarToRow [codegen id : 3]
+Input [4]: [tpep_pickup_datetime#439, tpep_dropoff_datetime#440, trip_distance#442, fare_amount#448]
+
+(11) Filter [codegen id : 3]
+Input [4]: [tpep_pickup_datetime#439, tpep_dropoff_datetime#440, trip_distance#442, fare_amount#448]
+Condition : (((((((((((isnotnull(tpep_pickup_datetime#439) AND isnotnull(tpep_dropoff_datetime#440)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#439 as timestamp), cast(tpep_dropoff_datetime#440 as timestamp), Some(America/New_York)) > 0)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#439 as timestamp), cast(tpep_dropoff_datetime#440 as timestamp), Some(America/New_York)) <= 86400000000)) AND isnotnull(trip_distance#442)) AND NOT isnan(trip_distance#442)) AND (trip_distance#442 >= 0.0)) AND (trip_distance#442 < Infinity)) AND isnotnull(fare_amount#448)) AND NOT isnan(fare_amount#448)) AND (fare_amount#448 >= 0.0)) AND (fare_amount#448 < Infinity))
+
+(12) Project [codegen id : 3]
+Output [2]: [dayofweek(cast(tpep_pickup_datetime#439 as date)) AS _groupingexpression#582, hour(tpep_pickup_datetime#439, Some(America/New_York)) AS _groupingexpression#583]
+Input [4]: [tpep_pickup_datetime#439, tpep_dropoff_datetime#440, trip_distance#442, fare_amount#448]
+
+(13) Scan parquet
+Output [4]: [tpep_pickup_datetime#466, tpep_dropoff_datetime#467, trip_distance#469, fare_amount#475]
+Batched: true
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(tpep_pickup_datetime), IsNotNull(tpep_dropoff_datetime), IsNotNull(trip_distance), GreaterThanOrEqual(trip_distance,0.0), LessThan(trip_distance,Infinity), IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), LessThan(fare_amount,Infinity)]
+ReadSchema: struct<tpep_pickup_datetime:timestamp_ntz,tpep_dropoff_datetime:timestamp_ntz,trip_distance:double,fare_amount:double>
+
+(14) ColumnarToRow [codegen id : 4]
+Input [4]: [tpep_pickup_datetime#466, tpep_dropoff_datetime#467, trip_distance#469, fare_amount#475]
+
+(15) Filter [codegen id : 4]
+Input [4]: [tpep_pickup_datetime#466, tpep_dropoff_datetime#467, trip_distance#469, fare_amount#475]
+Condition : (((((((((((isnotnull(tpep_pickup_datetime#466) AND isnotnull(tpep_dropoff_datetime#467)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#466 as timestamp), cast(tpep_dropoff_datetime#467 as timestamp), Some(America/New_York)) > 0)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#466 as timestamp), cast(tpep_dropoff_datetime#467 as timestamp), Some(America/New_York)) <= 86400000000)) AND isnotnull(trip_distance#469)) AND NOT isnan(trip_distance#469)) AND (trip_distance#469 >= 0.0)) AND (trip_distance#469 < Infinity)) AND isnotnull(fare_amount#475)) AND NOT isnan(fare_amount#475)) AND (fare_amount#475 >= 0.0)) AND (fare_amount#475 < Infinity))
+
+(16) Project [codegen id : 4]
+Output [2]: [dayofweek(cast(tpep_pickup_datetime#466 as date)) AS _groupingexpression#584, hour(tpep_pickup_datetime#466, Some(America/New_York)) AS _groupingexpression#585]
+Input [4]: [tpep_pickup_datetime#466, tpep_dropoff_datetime#467, trip_distance#469, fare_amount#475]
+
+(17) Union
+
+(18) HashAggregate [codegen id : 5]
+Input [2]: [_groupingexpression#578, _groupingexpression#579]
+Keys [2]: [_groupingexpression#578, _groupingexpression#579]
+Functions [1]: [partial_count(1)]
+Aggregate Attributes [1]: [count#586L]
+Results [3]: [_groupingexpression#578, _groupingexpression#579, count#587L]
+
+(19) Exchange
+Input [3]: [_groupingexpression#578, _groupingexpression#579, count#587L]
+Arguments: hashpartitioning(_groupingexpression#578, _groupingexpression#579, 8), ENSURE_REQUIREMENTS, [plan_id=1976]
+
+(20) HashAggregate [codegen id : 6]
+Input [3]: [_groupingexpression#578, _groupingexpression#579, count#587L]
+Keys [2]: [_groupingexpression#578, _groupingexpression#579]
+Functions [1]: [count(1)]
+Aggregate Attributes [1]: [count(1)#577L]
+Results [3]: [_groupingexpression#578 AS day_of_week#574, _groupingexpression#579 AS pickup_hour#575, count(1)#577L AS trips#576L]
+
+(21) Exchange
+Input [3]: [day_of_week#574, pickup_hour#575, trips#576L]
+Arguments: rangepartitioning(day_of_week#574 ASC NULLS FIRST, pickup_hour#575 ASC NULLS FIRST, 8), ENSURE_REQUIREMENTS, [plan_id=1980]
+
+(22) Sort [codegen id : 7]
+Input [3]: [day_of_week#574, pickup_hour#575, trips#576L]
+Arguments: [day_of_week#574 ASC NULLS FIRST, pickup_hour#575 ASC NULLS FIRST], true, 0

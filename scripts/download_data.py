@@ -1,4 +1,4 @@
-"""Download the fixed milestone files from NYC TLC and record their provenance."""
+"""Download the four TLC files and record their checksums."""
 
 import argparse
 import hashlib
@@ -13,6 +13,8 @@ BASE_URL = "https://d37ci6vzurychx.cloudfront.net"
 FILES = (
     "trip-data/yellow_tripdata_2024-01.parquet",
     "trip-data/yellow_tripdata_2024-02.parquet",
+    "trip-data/yellow_tripdata_2024-03.parquet",
+    "trip-data/yellow_tripdata_2024-04.parquet",
     "misc/taxi_zone_lookup.csv",
 )
 
@@ -40,12 +42,27 @@ def download(url: str, target: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("data/raw"))
+    parser.add_argument("--refresh", action="store_true", help="download even if the checksum matches")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
+    manifest_path = args.output / "manifest.json"
+    previous = {}
+    if manifest_path.is_file() and not args.refresh:
+        previous = {
+            entry["filename"]: entry for entry in json.loads(manifest_path.read_text(encoding="utf-8"))
+        }
+
     manifest = []
     for source in FILES:
         url = f"{BASE_URL}/{source}"
         target = args.output / Path(source).name
+        entry = previous.get(target.name)
+        if entry and entry["url"] == url and target.is_file() and target.stat().st_size == entry["bytes"]:
+            with target.open("rb") as file:
+                if hashlib.file_digest(file, "sha256").hexdigest() == entry["sha256"]:
+                    print(f"Verified {target.name}", flush=True)
+                    manifest.append(entry)
+                    continue
         print(f"Downloading {target.name}", flush=True)
         download(url, target)
         with target.open("rb") as file:
@@ -56,7 +73,7 @@ def main() -> None:
                 "bytes": target.stat().st_size,
                 "sha256": hashlib.file_digest(file, "sha256").hexdigest(),
             })
-    (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

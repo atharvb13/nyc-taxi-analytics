@@ -1,7 +1,9 @@
 """Run the Spark smoke check or analyze supplied TLC Parquet files."""
 
 import argparse
+import csv
 import json
+from pathlib import Path
 
 from pyspark.sql import functions as F
 
@@ -15,13 +17,20 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inputs", nargs="*", help="TLC Yellow Taxi Parquet files")
     parser.add_argument("--smoke", action="store_true", help="check that all four Spark tasks ran")
-    parser.add_argument("--query", choices=QUERIES, default="hourly_pickups")
+    parser.add_argument("--query", choices=(*QUERIES, "all"), default="hourly_pickups")
     parser.add_argument("--zones", help="optional TLC zone lookup CSV")
+    parser.add_argument("--output", type=Path, help="write the selected queries and cleaning counts to a new directory")
+    parser.add_argument("--master", default="local[2]")
+    parser.add_argument("--shuffle-partitions", type=int, default=8)
     args = parser.parse_args()
     if not args.smoke and not args.inputs:
         parser.error("provide Parquet files or --smoke")
+    if args.shuffle_partitions < 1:
+        parser.error("--shuffle-partitions must be positive")
+    if args.output and args.output.exists():
+        parser.error("choose a new output directory")
 
-    spark = start_spark()
+    spark = start_spark(args.master, args.shuffle_partitions)
     try:
         if args.smoke:
             partitions = (
@@ -37,9 +46,25 @@ def main() -> None:
             print(f"Spark {spark.version} on {spark.sparkContext.master}: 4 tasks, 1,000 rows, sum 499,500")
             return
         raw = read_trips(spark, args.inputs)
-        print(json.dumps(quality_counts(raw), indent=2))
+        counts = json.dumps(quality_counts(raw), indent=2)
+        print(counts)
+        if args.output:
+            args.output.mkdir(parents=True)
+            (args.output / "quality.json").write_text(counts + "\n", encoding="utf-8")
         register_views(spark, clean_trips(raw), args.zones)
-        spark.sql(QUERIES[args.query]).show(200, truncate=False)
+        names = QUERIES if args.query == "all" else (args.query,)
+        for name in names:
+            result = spark.sql(QUERIES[name])
+            if not args.output:
+                print(name)
+                result.show(200, truncate=False)
+                continue
+            rows = result.collect()
+            with (args.output / f"{name}.csv").open("w", newline="", encoding="utf-8") as file:
+                writer = csv.writer(file, lineterminator="\n")
+                writer.writerow(result.columns)
+                writer.writerows(rows)
+            print(f"{name}: {len(rows)} rows")
     finally:
         spark.stop()
 

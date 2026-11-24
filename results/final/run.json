@@ -1,0 +1,139 @@
+{
+  "run_id": "final",
+  "started_utc": "2026-11-24T05:29:37+00:00",
+  "spark_version": "4.0.1",
+  "python_version": "3.12.14",
+  "java_version": "openjdk version \"21.0.10\" 2026-01-20",
+  "system": "macOS-26.6.2-arm64-arm-64bit",
+  "spark_master": "local[2]",
+  "spark_conf": {
+    "spark.sql.shuffle.partitions": "8",
+    "spark.sql.adaptive.enabled": "false",
+    "spark.sql.session.timeZone": "America/New_York"
+  },
+  "cache_modes": [
+    "memory_and_disk",
+    "off"
+  ],
+  "spark_driver_memory": "1g (default)",
+  "timed_action": "collect",
+  "note": "Apple M4, 16 GiB RAM. Local Parquet. OS file cache left in place. Cases ran in config order in one Spark session.",
+  "settings": {
+    "master": "local[2]",
+    "shuffle_partitions": 8,
+    "query": "hourly_pickups",
+    "warmups": 1,
+    "repetitions": 3,
+    "task_metrics": true,
+    "cases": {
+      "size_1": {
+        "experiment": "size",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet"
+        ]
+      },
+      "size_2": {
+        "experiment": "size",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ]
+      },
+      "size_3": {
+        "experiment": "size",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet",
+          "data/raw/yellow_tripdata_2024-03.parquet"
+        ]
+      },
+      "size_4": {
+        "experiment": "size",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet",
+          "data/raw/yellow_tripdata_2024-03.parquet",
+          "data/raw/yellow_tripdata_2024-04.parquet"
+        ]
+      },
+      "partition_4": {
+        "experiment": "partitions",
+        "repartition": 4,
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "partition_8": {
+        "experiment": "partitions",
+        "repartition": 8,
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "partition_16": {
+        "experiment": "partitions",
+        "repartition": 16,
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "partition_32": {
+        "experiment": "partitions",
+        "repartition": 32,
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "cache_off_a": {
+        "experiment": "cache",
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "cache_on_a": {
+        "experiment": "cache",
+        "cache": "memory_and_disk",
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "cache_on_b": {
+        "experiment": "cache",
+        "cache": "memory_and_disk",
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      },
+      "cache_off_b": {
+        "experiment": "cache",
+        "query": "routes_by_hour",
+        "inputs": [
+          "data/raw/yellow_tripdata_2024-01.parquet",
+          "data/raw/yellow_tripdata_2024-02.parquet"
+        ],
+        "zones": "data/raw/taxi_zone_lookup.csv"
+      }
+    }
+  }
+}

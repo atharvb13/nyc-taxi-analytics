@@ -1,0 +1,21 @@
+direction,zone_id,zone_name,trips
+dropoff,236,Upper East Side North,584266
+dropoff,237,Upper East Side South,542989
+dropoff,161,Midtown Center,479530
+dropoff,230,Times Sq/Theatre District,395168
+dropoff,170,Murray Hill,380818
+dropoff,239,Upper West Side South,373405
+dropoff,142,Lincoln Square East,370261
+dropoff,162,Midtown East,362619
+dropoff,141,Lenox Hill West,347824
+dropoff,68,East Chelsea,331403
+pickup,161,Midtown Center,608756
+pickup,237,Upper East Side South,596898
+pickup,132,JFK Airport,568484
+pickup,236,Upper East Side North,562368
+pickup,162,Midtown East,449856
+pickup,230,Times Sq/Theatre District,440526
+pickup,142,Lincoln Square East,427563
+pickup,186,Penn Station/Madison Sq West,425354
+pickup,138,LaGuardia Airport,391149
+pickup,239,Upper West Side South,377896

@@ -1,0 +1,197 @@
+== Physical Plan ==
+* Sort (35)
++- Exchange (34)
+   +- * Project (33)
+      +- * BroadcastHashJoin LeftOuter BuildRight (32)
+         :- * Project (30)
+         :  +- * BroadcastHashJoin LeftOuter BuildRight (29)
+         :     :- * Filter (19)
+         :     :  +- Window (18)
+         :     :     +- WindowGroupLimit (17)
+         :     :        +- * Sort (16)
+         :     :           +- Exchange (15)
+         :     :              +- WindowGroupLimit (14)
+         :     :                 +- * Sort (13)
+         :     :                    +- * HashAggregate (12)
+         :     :                       +- Exchange (11)
+         :     :                          +- * HashAggregate (10)
+         :     :                             +- Union (9)
+         :     :                                :- * Project (4)
+         :     :                                :  +- * Filter (3)
+         :     :                                :     +- * ColumnarToRow (2)
+         :     :                                :        +- Scan parquet  (1)
+         :     :                                +- * Project (8)
+         :     :                                   +- * Filter (7)
+         :     :                                      +- * ColumnarToRow (6)
+         :     :                                         +- Scan parquet  (5)
+         :     +- BroadcastExchange (28)
+         :        +- SortAggregate (27)
+         :           +- * Sort (26)
+         :              +- Exchange (25)
+         :                 +- SortAggregate (24)
+         :                    +- * Sort (23)
+         :                       +- * Project (22)
+         :                          +- * Filter (21)
+         :                             +- Scan csv  (20)
+         +- ReusedExchange (31)
+
+
+(1) Scan parquet
+Output [6]: [tpep_pickup_datetime#3994, tpep_dropoff_datetime#3995, trip_distance#3997, PULocationID#4000, DOLocationID#4001, fare_amount#4003]
+Batched: true
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(tpep_pickup_datetime), IsNotNull(tpep_dropoff_datetime), IsNotNull(trip_distance), GreaterThanOrEqual(trip_distance,0.0), LessThan(trip_distance,Infinity), IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), LessThan(fare_amount,Infinity), IsNotNull(PULocationID), IsNotNull(DOLocationID)]
+ReadSchema: struct<tpep_pickup_datetime:timestamp_ntz,tpep_dropoff_datetime:timestamp_ntz,trip_distance:double,PULocationID:int,DOLocationID:int,fare_amount:double>
+
+(2) ColumnarToRow [codegen id : 1]
+Input [6]: [tpep_pickup_datetime#3994, tpep_dropoff_datetime#3995, trip_distance#3997, PULocationID#4000, DOLocationID#4001, fare_amount#4003]
+
+(3) Filter [codegen id : 1]
+Input [6]: [tpep_pickup_datetime#3994, tpep_dropoff_datetime#3995, trip_distance#3997, PULocationID#4000, DOLocationID#4001, fare_amount#4003]
+Condition : (((((((((((((isnotnull(tpep_pickup_datetime#3994) AND isnotnull(tpep_dropoff_datetime#3995)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#3994 as timestamp), cast(tpep_dropoff_datetime#3995 as timestamp), Some(America/New_York)) > 0)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#3994 as timestamp), cast(tpep_dropoff_datetime#3995 as timestamp), Some(America/New_York)) <= 86400000000)) AND isnotnull(trip_distance#3997)) AND NOT isnan(trip_distance#3997)) AND (trip_distance#3997 >= 0.0)) AND (trip_distance#3997 < Infinity)) AND isnotnull(fare_amount#4003)) AND NOT isnan(fare_amount#4003)) AND (fare_amount#4003 >= 0.0)) AND (fare_amount#4003 < Infinity)) AND isnotnull(PULocationID#4000)) AND isnotnull(DOLocationID#4001))
+
+(4) Project [codegen id : 1]
+Output [3]: [PULocationID#4000 AS pickup_zone_id#4014, DOLocationID#4001 AS dropoff_zone_id#4015, hour(tpep_pickup_datetime#3994, Some(America/New_York)) AS _groupingexpression#4045]
+Input [6]: [tpep_pickup_datetime#3994, tpep_dropoff_datetime#3995, trip_distance#3997, PULocationID#4000, DOLocationID#4001, fare_amount#4003]
+
+(5) Scan parquet
+Output [6]: [tpep_pickup_datetime#4020, tpep_dropoff_datetime#4021, trip_distance#4023, PULocationID#4026, DOLocationID#4027, fare_amount#4029]
+Batched: true
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(tpep_pickup_datetime), IsNotNull(tpep_dropoff_datetime), IsNotNull(trip_distance), GreaterThanOrEqual(trip_distance,0.0), LessThan(trip_distance,Infinity), IsNotNull(fare_amount), GreaterThanOrEqual(fare_amount,0.0), LessThan(fare_amount,Infinity), IsNotNull(PULocationID), IsNotNull(DOLocationID)]
+ReadSchema: struct<tpep_pickup_datetime:timestamp_ntz,tpep_dropoff_datetime:timestamp_ntz,trip_distance:double,PULocationID:int,DOLocationID:int,fare_amount:double>
+
+(6) ColumnarToRow [codegen id : 2]
+Input [6]: [tpep_pickup_datetime#4020, tpep_dropoff_datetime#4021, trip_distance#4023, PULocationID#4026, DOLocationID#4027, fare_amount#4029]
+
+(7) Filter [codegen id : 2]
+Input [6]: [tpep_pickup_datetime#4020, tpep_dropoff_datetime#4021, trip_distance#4023, PULocationID#4026, DOLocationID#4027, fare_amount#4029]
+Condition : (((((((((((((isnotnull(tpep_pickup_datetime#4020) AND isnotnull(tpep_dropoff_datetime#4021)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#4020 as timestamp), cast(tpep_dropoff_datetime#4021 as timestamp), Some(America/New_York)) > 0)) AND (timestampdiff(MICROSECOND, cast(tpep_pickup_datetime#4020 as timestamp), cast(tpep_dropoff_datetime#4021 as timestamp), Some(America/New_York)) <= 86400000000)) AND isnotnull(trip_distance#4023)) AND NOT isnan(trip_distance#4023)) AND (trip_distance#4023 >= 0.0)) AND (trip_distance#4023 < Infinity)) AND isnotnull(fare_amount#4029)) AND NOT isnan(fare_amount#4029)) AND (fare_amount#4029 >= 0.0)) AND (fare_amount#4029 < Infinity)) AND isnotnull(PULocationID#4026)) AND isnotnull(DOLocationID#4027))
+
+(8) Project [codegen id : 2]
+Output [3]: [PULocationID#4026 AS pickup_zone_id#4040, DOLocationID#4027 AS dropoff_zone_id#4041, hour(tpep_pickup_datetime#4020, Some(America/New_York)) AS _groupingexpression#4049]
+Input [6]: [tpep_pickup_datetime#4020, tpep_dropoff_datetime#4021, trip_distance#4023, PULocationID#4026, DOLocationID#4027, fare_amount#4029]
+
+(9) Union
+
+(10) HashAggregate [codegen id : 3]
+Input [3]: [pickup_zone_id#4014, dropoff_zone_id#4015, _groupingexpression#4045]
+Keys [3]: [_groupingexpression#4045, pickup_zone_id#4014, dropoff_zone_id#4015]
+Functions [1]: [partial_count(1)]
+Aggregate Attributes [1]: [count#4050L]
+Results [4]: [_groupingexpression#4045, pickup_zone_id#4014, dropoff_zone_id#4015, count#4051L]
+
+(11) Exchange
+Input [4]: [_groupingexpression#4045, pickup_zone_id#4014, dropoff_zone_id#4015, count#4051L]
+Arguments: hashpartitioning(_groupingexpression#4045, pickup_zone_id#4014, dropoff_zone_id#4015, 8), ENSURE_REQUIREMENTS, [plan_id=9023]
+
+(12) HashAggregate [codegen id : 4]
+Input [4]: [_groupingexpression#4045, pickup_zone_id#4014, dropoff_zone_id#4015, count#4051L]
+Keys [3]: [_groupingexpression#4045, pickup_zone_id#4014, dropoff_zone_id#4015]
+Functions [1]: [count(1)]
+Aggregate Attributes [1]: [count(1)#3929L]
+Results [4]: [_groupingexpression#4045 AS pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, count(1)#3929L AS trips#4047L]
+
+(13) Sort [codegen id : 4]
+Input [4]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L]
+Arguments: [pickup_hour#4046 ASC NULLS FIRST, trips#4047L DESC NULLS LAST, pickup_zone_id#4014 ASC NULLS FIRST, dropoff_zone_id#4015 ASC NULLS FIRST], false, 0
+
+(14) WindowGroupLimit
+Input [4]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L]
+Arguments: [pickup_hour#4046], [trips#4047L DESC NULLS LAST, pickup_zone_id#4014 ASC NULLS FIRST, dropoff_zone_id#4015 ASC NULLS FIRST], row_number(), 5, Partial
+
+(15) Exchange
+Input [4]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L]
+Arguments: hashpartitioning(pickup_hour#4046, 8), ENSURE_REQUIREMENTS, [plan_id=9029]
+
+(16) Sort [codegen id : 5]
+Input [4]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L]
+Arguments: [pickup_hour#4046 ASC NULLS FIRST, trips#4047L DESC NULLS LAST, pickup_zone_id#4014 ASC NULLS FIRST, dropoff_zone_id#4015 ASC NULLS FIRST], false, 0
+
+(17) WindowGroupLimit
+Input [4]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L]
+Arguments: [pickup_hour#4046], [trips#4047L DESC NULLS LAST, pickup_zone_id#4014 ASC NULLS FIRST, dropoff_zone_id#4015 ASC NULLS FIRST], row_number(), 5, Final
+
+(18) Window
+Input [4]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L]
+Arguments: [row_number() windowspecdefinition(pickup_hour#4046, trips#4047L DESC NULLS LAST, pickup_zone_id#4014 ASC NULLS FIRST, dropoff_zone_id#4015 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS route_rank#4048], [pickup_hour#4046], [trips#4047L DESC NULLS LAST, pickup_zone_id#4014 ASC NULLS FIRST, dropoff_zone_id#4015 ASC NULLS FIRST]
+
+(19) Filter [codegen id : 10]
+Input [5]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L, route_rank#4048]
+Condition : (route_rank#4048 <= 5)
+
+(20) Scan csv
+Output [2]: [LocationID#3469, Zone#3471]
+Batched: false
+Location: see case inputs in run.json
+PushedFilters: [IsNotNull(LocationID)]
+ReadSchema: struct<LocationID:string,Zone:string>
+
+(21) Filter [codegen id : 6]
+Input [2]: [LocationID#3469, Zone#3471]
+Condition : (isnotnull(LocationID#3469) AND isnotnull(try_cast(LocationID#3469 as int)))
+
+(22) Project [codegen id : 6]
+Output [2]: [try_cast(LocationID#3469 as int) AS zone_id#3473, Zone#3471 AS zone_name#3474]
+Input [2]: [LocationID#3469, Zone#3471]
+
+(23) Sort [codegen id : 6]
+Input [2]: [zone_id#3473, zone_name#3474]
+Arguments: [zone_id#3473 ASC NULLS FIRST], false, 0
+
+(24) SortAggregate
+Input [2]: [zone_id#3473, zone_name#3474]
+Keys [1]: [zone_id#3473]
+Functions [1]: [partial_min(zone_name#3474)]
+Aggregate Attributes [1]: [min#3615]
+Results [2]: [zone_id#3473, min#3616]
+
+(25) Exchange
+Input [2]: [zone_id#3473, min#3616]
+Arguments: hashpartitioning(zone_id#3473, 8), ENSURE_REQUIREMENTS, [plan_id=9043]
+
+(26) Sort [codegen id : 7]
+Input [2]: [zone_id#3473, min#3616]
+Arguments: [zone_id#3473 ASC NULLS FIRST], false, 0
+
+(27) SortAggregate
+Input [2]: [zone_id#3473, min#3616]
+Keys [1]: [zone_id#3473]
+Functions [1]: [min(zone_name#3474)]
+Aggregate Attributes [1]: [min(zone_name#3474)#3479]
+Results [2]: [zone_id#3473, min(zone_name#3474)#3479 AS zone_name#3476]
+
+(28) BroadcastExchange
+Input [2]: [zone_id#3473, zone_name#3476]
+Arguments: HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=9048]
+
+(29) BroadcastHashJoin [codegen id : 10]
+Left keys [1]: [pickup_zone_id#4014]
+Right keys [1]: [zone_id#3473]
+Join type: LeftOuter
+Join condition: None
+
+(30) Project [codegen id : 10]
+Output [6]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L, route_rank#4048, zone_name#3476]
+Input [7]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L, route_rank#4048, zone_id#3473, zone_name#3476]
+
+(31) ReusedExchange [Reuses operator id: 28]
+Output [2]: [zone_id#3926, zone_name#3928]
+
+(32) BroadcastHashJoin [codegen id : 10]
+Left keys [1]: [dropoff_zone_id#4015]
+Right keys [1]: [zone_id#3926]
+Join type: LeftOuter
+Join condition: None
+
+(33) Project [codegen id : 10]
+Output [7]: [pickup_hour#4046, route_rank#4048, pickup_zone_id#4014, zone_name#3476 AS pickup_zone#3917, dropoff_zone_id#4015, zone_name#3928 AS dropoff_zone#3918, trips#4047L]
+Input [8]: [pickup_hour#4046, pickup_zone_id#4014, dropoff_zone_id#4015, trips#4047L, route_rank#4048, zone_name#3476, zone_id#3926, zone_name#3928]
+
+(34) Exchange
+Input [7]: [pickup_hour#4046, route_rank#4048, pickup_zone_id#4014, pickup_zone#3917, dropoff_zone_id#4015, dropoff_zone#3918, trips#4047L]
+Arguments: rangepartitioning(pickup_hour#4046 ASC NULLS FIRST, route_rank#4048 ASC NULLS FIRST, 8), ENSURE_REQUIREMENTS, [plan_id=9156]
+
+(35) Sort [codegen id : 11]
+Input [7]: [pickup_hour#4046, route_rank#4048, pickup_zone_id#4014, pickup_zone#3917, dropoff_zone_id#4015, dropoff_zone#3918, trips#4047L]
+Arguments: [pickup_hour#4046 ASC NULLS FIRST, route_rank#4048 ASC NULLS FIRST], true, 0

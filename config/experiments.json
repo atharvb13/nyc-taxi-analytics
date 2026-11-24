@@ -1,0 +1,72 @@
+{
+  "master": "local[2]",
+  "shuffle_partitions": 8,
+  "query": "hourly_pickups",
+  "warmups": 1,
+  "repetitions": 3,
+  "task_metrics": true,
+  "cases": {
+    "size_1": {
+      "experiment": "size",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet"]
+    },
+    "size_2": {
+      "experiment": "size",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"]
+    },
+    "size_3": {
+      "experiment": "size",
+      "inputs": [
+        "data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet",
+        "data/raw/yellow_tripdata_2024-03.parquet"
+      ]
+    },
+    "size_4": {
+      "experiment": "size",
+      "inputs": [
+        "data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet",
+        "data/raw/yellow_tripdata_2024-03.parquet", "data/raw/yellow_tripdata_2024-04.parquet"
+      ]
+    },
+    "partition_4": {
+      "experiment": "partitions", "repartition": 4, "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "partition_8": {
+      "experiment": "partitions", "repartition": 8, "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "partition_16": {
+      "experiment": "partitions", "repartition": 16, "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "partition_32": {
+      "experiment": "partitions", "repartition": 32, "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "cache_off_a": {
+      "experiment": "cache", "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "cache_on_a": {
+      "experiment": "cache", "cache": "memory_and_disk", "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "cache_on_b": {
+      "experiment": "cache", "cache": "memory_and_disk", "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    },
+    "cache_off_b": {
+      "experiment": "cache", "query": "routes_by_hour",
+      "inputs": ["data/raw/yellow_tripdata_2024-01.parquet", "data/raw/yellow_tripdata_2024-02.parquet"],
+      "zones": "data/raw/taxi_zone_lookup.csv"
+    }
+  }
+}

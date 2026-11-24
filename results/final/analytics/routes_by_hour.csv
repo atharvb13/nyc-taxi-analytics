@@ -1,0 +1,121 @@
+pickup_hour,route_rank,pickup_zone_id,pickup_zone,dropoff_zone_id,dropoff_zone,trips
+0,1,249,West Village,79,East Village,1940
+0,2,79,East Village,79,East Village,1694
+0,3,114,Greenwich Village South,79,East Village,1321
+0,4,79,East Village,107,Gramercy,1320
+0,5,79,East Village,170,Murray Hill,1279
+1,1,79,East Village,79,East Village,1747
+1,2,249,West Village,79,East Village,1742
+1,3,148,Lower East Side,79,East Village,1430
+1,4,79,East Village,170,Murray Hill,1375
+1,5,79,East Village,107,Gramercy,1329
+2,1,79,East Village,79,East Village,1364
+2,2,148,Lower East Side,79,East Village,1224
+2,3,249,West Village,79,East Village,1048
+2,4,79,East Village,107,Gramercy,1026
+2,5,114,Greenwich Village South,79,East Village,1019
+3,1,79,East Village,79,East Village,848
+3,2,246,West Chelsea/Hudson Yards,48,Clinton East,761
+3,3,148,Lower East Side,79,East Village,712
+3,4,79,East Village,107,Gramercy,606
+3,5,249,West Village,79,East Village,594
+4,1,230,Times Sq/Theatre District,138,LaGuardia Airport,552
+4,2,230,Times Sq/Theatre District,132,JFK Airport,395
+4,3,48,Clinton East,48,Clinton East,333
+4,4,79,East Village,79,East Village,327
+4,5,48,Clinton East,68,East Chelsea,316
+5,1,100,Garment District,161,Midtown Center,1084
+5,2,186,Penn Station/Madison Sq West,161,Midtown Center,796
+5,3,48,Clinton East,161,Midtown Center,754
+5,4,230,Times Sq/Theatre District,138,LaGuardia Airport,674
+5,5,186,Penn Station/Madison Sq West,230,Times Sq/Theatre District,640
+6,1,100,Garment District,161,Midtown Center,1862
+6,2,48,Clinton East,161,Midtown Center,1474
+6,3,186,Penn Station/Madison Sq West,161,Midtown Center,1324
+6,4,186,Penn Station/Madison Sq West,230,Times Sq/Theatre District,1111
+6,5,186,Penn Station/Madison Sq West,137,Kips Bay,1032
+7,1,236,Upper East Side North,161,Midtown Center,2956
+7,2,237,Upper East Side South,236,Upper East Side North,2672
+7,3,236,Upper East Side North,237,Upper East Side South,2466
+7,4,236,Upper East Side North,236,Upper East Side North,2321
+7,5,186,Penn Station/Madison Sq West,161,Midtown Center,2079
+8,1,236,Upper East Side North,237,Upper East Side South,3863
+8,2,236,Upper East Side North,161,Midtown Center,3713
+8,3,236,Upper East Side North,236,Upper East Side North,3501
+8,4,237,Upper East Side South,236,Upper East Side North,3307
+8,5,237,Upper East Side South,161,Midtown Center,2818
+9,1,236,Upper East Side North,237,Upper East Side South,5317
+9,2,237,Upper East Side South,236,Upper East Side North,3996
+9,3,236,Upper East Side North,236,Upper East Side North,3440
+9,4,236,Upper East Side North,161,Midtown Center,3396
+9,5,237,Upper East Side South,161,Midtown Center,3060
+10,1,236,Upper East Side North,237,Upper East Side South,5690
+10,2,237,Upper East Side South,236,Upper East Side North,4912
+10,3,236,Upper East Side North,236,Upper East Side North,4039
+10,4,237,Upper East Side South,237,Upper East Side South,3528
+10,5,237,Upper East Side South,161,Midtown Center,2803
+11,1,236,Upper East Side North,237,Upper East Side South,6538
+11,2,237,Upper East Side South,236,Upper East Side North,5746
+11,3,236,Upper East Side North,236,Upper East Side North,4375
+11,4,237,Upper East Side South,237,Upper East Side South,4234
+11,5,237,Upper East Side South,161,Midtown Center,2811
+12,1,236,Upper East Side North,237,Upper East Side South,7135
+12,2,237,Upper East Side South,236,Upper East Side North,6314
+12,3,237,Upper East Side South,237,Upper East Side South,5112
+12,4,236,Upper East Side North,236,Upper East Side North,4722
+12,5,237,Upper East Side South,161,Midtown Center,3023
+13,1,237,Upper East Side South,236,Upper East Side North,6348
+13,2,236,Upper East Side North,237,Upper East Side South,5944
+13,3,236,Upper East Side North,236,Upper East Side North,4635
+13,4,237,Upper East Side South,237,Upper East Side South,4595
+13,5,161,Midtown Center,237,Upper East Side South,2960
+14,1,237,Upper East Side South,236,Upper East Side North,7739
+14,2,236,Upper East Side North,237,Upper East Side South,5738
+14,3,236,Upper East Side North,236,Upper East Side North,5112
+14,4,237,Upper East Side South,237,Upper East Side South,4690
+14,5,161,Midtown Center,237,Upper East Side South,3453
+15,1,237,Upper East Side South,236,Upper East Side North,7483
+15,2,236,Upper East Side North,237,Upper East Side South,6855
+15,3,236,Upper East Side North,236,Upper East Side North,5655
+15,4,237,Upper East Side South,237,Upper East Side South,4767
+15,5,161,Midtown Center,237,Upper East Side South,3506
+16,1,237,Upper East Side South,236,Upper East Side North,6964
+16,2,236,Upper East Side North,237,Upper East Side South,5459
+16,3,236,Upper East Side North,236,Upper East Side North,4915
+16,4,237,Upper East Side South,237,Upper East Side South,4355
+16,5,161,Midtown Center,237,Upper East Side South,3845
+17,1,237,Upper East Side South,236,Upper East Side North,6941
+17,2,236,Upper East Side North,237,Upper East Side South,5916
+17,3,236,Upper East Side North,236,Upper East Side North,5037
+17,4,237,Upper East Side South,237,Upper East Side South,4346
+17,5,161,Midtown Center,237,Upper East Side South,4196
+18,1,237,Upper East Side South,236,Upper East Side North,6520
+18,2,236,Upper East Side North,237,Upper East Side South,6153
+18,3,236,Upper East Side North,236,Upper East Side North,4909
+18,4,237,Upper East Side South,237,Upper East Side South,4630
+18,5,161,Midtown Center,237,Upper East Side South,3872
+19,1,237,Upper East Side South,236,Upper East Side North,5062
+19,2,236,Upper East Side North,237,Upper East Side South,4044
+19,3,237,Upper East Side South,237,Upper East Side South,3593
+19,4,236,Upper East Side North,236,Upper East Side North,3413
+19,5,161,Midtown Center,236,Upper East Side North,2936
+20,1,237,Upper East Side South,236,Upper East Side North,4617
+20,2,161,Midtown Center,236,Upper East Side North,2697
+20,3,237,Upper East Side South,237,Upper East Side South,2655
+20,4,236,Upper East Side North,236,Upper East Side North,2501
+20,5,236,Upper East Side North,237,Upper East Side South,2487
+21,1,237,Upper East Side South,236,Upper East Side North,4657
+21,2,142,Lincoln Square East,239,Upper West Side South,2704
+21,3,161,Midtown Center,236,Upper East Side North,2609
+21,4,237,Upper East Side South,237,Upper East Side South,2601
+21,5,142,Lincoln Square East,238,Upper West Side North,2485
+22,1,237,Upper East Side South,236,Upper East Side North,2774
+22,2,142,Lincoln Square East,239,Upper West Side South,2578
+22,3,142,Lincoln Square East,238,Upper West Side North,2307
+22,4,142,Lincoln Square East,236,Upper East Side North,2304
+22,5,161,Midtown Center,236,Upper East Side North,2086
+23,1,249,West Village,79,East Village,1812
+23,2,132,JFK Airport,265,Outside of NYC,1611
+23,3,79,East Village,79,East Village,1489
+23,4,48,Clinton East,68,East Chelsea,1350
+23,5,142,Lincoln Square East,239,Upper West Side South,1292

@@ -1,0 +1,126 @@
+{
+  "sizes": [
+    {
+      "case": "size_1",
+      "months": 1,
+      "rows": 2964624,
+      "clean_rows": 2926295,
+      "rows_per_s": 3839977.41,
+      "trials": 3,
+      "median_s": 0.772042,
+      "min_s": 0.767753,
+      "max_s": 0.797235
+    },
+    {
+      "case": "size_2",
+      "months": 2,
+      "rows": 5972150,
+      "clean_rows": 5892352,
+      "rows_per_s": 4715332.69,
+      "trials": 3,
+      "median_s": 1.266538,
+      "min_s": 1.252981,
+      "max_s": 1.313338
+    },
+    {
+      "case": "size_3",
+      "months": 3,
+      "rows": 9554778,
+      "clean_rows": 9415372,
+      "rows_per_s": 4219795.51,
+      "trials": 3,
+      "median_s": 2.264275,
+      "min_s": 2.14771,
+      "max_s": 2.308601
+    },
+    {
+      "case": "size_4",
+      "months": 4,
+      "rows": 13069067,
+      "clean_rows": 12870983,
+      "rows_per_s": 4210287.63,
+      "trials": 3,
+      "median_s": 3.104079,
+      "min_s": 3.086785,
+      "max_s": 3.111742
+    }
+  ],
+  "partitions": [
+    {
+      "case": "partition_4",
+      "partitions": 4,
+      "shuffle_read_bytes": 92431259,
+      "max_tasks": 8,
+      "wide_stage_median_task_ms": 23.0,
+      "wide_stage_max_task_ms": 27.0,
+      "disk_spill_max_bytes": 0,
+      "trials": 3,
+      "median_s": 2.980673,
+      "min_s": 2.875846,
+      "max_s": 3.006202
+    },
+    {
+      "case": "partition_8",
+      "partitions": 8,
+      "shuffle_read_bytes": 95905782,
+      "max_tasks": 8,
+      "wide_stage_median_task_ms": 104.0,
+      "wide_stage_max_task_ms": 109.0,
+      "disk_spill_max_bytes": 0,
+      "trials": 3,
+      "median_s": 2.943612,
+      "min_s": 2.788414,
+      "max_s": 3.03256
+    },
+    {
+      "case": "partition_16",
+      "partitions": 16,
+      "shuffle_read_bytes": 100906615,
+      "max_tasks": 16,
+      "wide_stage_median_task_ms": 58.5,
+      "wide_stage_max_task_ms": 79.0,
+      "disk_spill_max_bytes": 0,
+      "trials": 3,
+      "median_s": 3.065338,
+      "min_s": 2.950617,
+      "max_s": 3.127893
+    },
+    {
+      "case": "partition_32",
+      "partitions": 32,
+      "shuffle_read_bytes": 107706690,
+      "max_tasks": 32,
+      "wide_stage_median_task_ms": 42.5,
+      "wide_stage_max_task_ms": 49.0,
+      "disk_spill_max_bytes": 0,
+      "trials": 3,
+      "median_s": 3.235777,
+      "min_s": 3.162242,
+      "max_s": 3.250615
+    }
+  ],
+  "cache": {
+    "off": {
+      "trials": 6,
+      "median_s": 1.5222319999999998,
+      "min_s": 1.487495,
+      "max_s": 1.557541
+    },
+    "on": {
+      "trials": 6,
+      "median_s": 0.4847135,
+      "min_s": 0.460045,
+      "max_s": 0.504467
+    },
+    "build": {
+      "trials": 2,
+      "median_s": 2.6028634999999998,
+      "min_s": 2.370775,
+      "max_s": 2.834952,
+      "memory_bytes": 251481512.0,
+      "disk_bytes": 0.0
+    },
+    "break_even_queries": 3
+  },
+  "routes_sha256": "526afcf462c07a350b88a1dcc5433a067630cd1c5d13c5263c5be6a9cd2d31ad"
+}
